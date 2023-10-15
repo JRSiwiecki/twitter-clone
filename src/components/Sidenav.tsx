@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function Sidenav() {
@@ -15,6 +15,16 @@ export default function Sidenav() {
         {user != null && (
           <li>
             <Link href={`/profiles/${user.id}`}>Profile</Link>
+          </li>
+        )}
+
+        {user == null ? (
+          <li>
+            <button onClick={() => void signIn}>Log In</button>
+          </li>
+        ) : (
+          <li>
+            <button onClick={() => void signOut}>Log Out</button>
           </li>
         )}
       </ul>
