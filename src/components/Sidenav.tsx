@@ -14,6 +14,7 @@ export default function Sidenav() {
 
         {user != null && (
           <li>
+            {/* <Link href="/">Profile</Link> */}
             <Link href={`/profiles/${user.id}`}>Profile</Link>
           </li>
         )}
