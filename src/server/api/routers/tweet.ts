@@ -27,7 +27,7 @@ export const tweetRouter = createTRPCRouter({
     .query(async ({ input: { limit = 10, cursor }, ctx }) => {
       const currentUserId = ctx.session?.user.id;
 
-      const tweets = await ctx.db.tweet.findMany({
+      const data = await ctx.db.tweet.findMany({
         take: limit + 1,
         cursor: cursor ? { createdAt_id: cursor } : undefined,
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -50,8 +50,8 @@ export const tweetRouter = createTRPCRouter({
 
       let nextCursor: typeof cursor | undefined;
 
-      if (tweets.length > limit) {
-        const nextItem = tweets.pop();
+      if (data.length > limit) {
+        const nextItem = data.pop();
 
         if (nextItem != null) {
           nextCursor = { id: nextItem.id, createdAt: nextItem.createdAt };
@@ -59,7 +59,7 @@ export const tweetRouter = createTRPCRouter({
       }
 
       return {
-        tweets: tweets.map((tweet) => {
+        tweets: data.map((tweet) => {
           return {
             id: tweet.id,
             content: tweet.content,
