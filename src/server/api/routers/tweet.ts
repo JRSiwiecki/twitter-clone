@@ -72,4 +72,21 @@ export const tweetRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+
+  toggleLike: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input: { id }, ctx }) => {
+      const data = { tweetId: id, userId: ctx.session.user.id };
+      const existingLike = await ctx.db.like.findUnique({
+        where: { userId_tweetId: data },
+      });
+
+      if (existingLike == null) {
+        await ctx.db.like.create({ data });
+        return { addedLike: true };
+      } else {
+        await ctx.db.like.delete({ where: { userId_tweetId: data } });
+        return { addedLike: false };
+      }
+    }),
 });
